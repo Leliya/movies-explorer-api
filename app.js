@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const { errors } = require('celebrate');
 const userRouter = require('./routes/users');
+const movieRouter = require('./routes/movies');
 const { handlerErrors } = require('./middlewares/handlerErrors');
 
 const { PORT = 3000 } = process.env;
@@ -19,6 +20,7 @@ mongoose.connect('mongodb://localhost:27017/movies', {
 });
 
 app.use('/users', userRouter);
+app.use('/movies', movieRouter);
 
 app.use(errors());
 
