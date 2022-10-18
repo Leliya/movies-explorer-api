@@ -2,7 +2,7 @@ const movieRouter = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
 const { regExpURL, langRu, langEn } = require('../utils/regexp');
 
-const { createMovie } = require('../controllers/movies');
+const { createMovie, getMovies } = require('../controllers/movies');
 
 movieRouter.post('/', celebrate(
   {
@@ -22,5 +22,7 @@ movieRouter.post('/', celebrate(
     }),
   },
 ), createMovie);
+
+movieRouter.get('/', getMovies);
 
 module.exports = movieRouter;

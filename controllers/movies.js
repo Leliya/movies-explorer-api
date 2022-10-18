@@ -1,5 +1,5 @@
 const CastError = require('../errors/cast-error');
-// const NotFoundError = require('../errors/not-found-error');
+const NotFoundError = require('../errors/not-found-error');
 const Movie = require('../models/movie');
 
 const createMovie = (req, res, next) => {
@@ -43,6 +43,14 @@ const createMovie = (req, res, next) => {
     });
 };
 
+const getMovies = (req, res, next) => {
+  Movie.find({ owner: req.user._id })
+    .orFail(() => { throw new NotFoundError('Фильмы не найдены'); })
+    .then((movies) => res.send(movies))
+    .catch(next);
+};
+
 module.exports = {
   createMovie,
+  getMovies,
 };
