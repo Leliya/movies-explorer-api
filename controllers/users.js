@@ -34,8 +34,7 @@ const createUser = (req, res, next) => {
 };
 
 const getCurrentUser = (req, res, next) => {
-  // User.findById(req.user._id)
-  User.findById('634db50876d0f32ce142e80c')
+  User.findById(req.user._id)
     .orFail(() => { throw new NotFoundError('Пользователь не найден'); })
     .then((user) => res.send(user))
     .catch(next);
@@ -44,13 +43,15 @@ const getCurrentUser = (req, res, next) => {
 const updateUserInfo = (req, res, next) => {
   const { name, email } = req.body;
   User.findByIdAndUpdate(
-    //   req.user._id,
-    '634db50876d0f32ce142e80c',
+    req.user._id,
     { name, email },
     { new: true, runValidators: true },
   ).orFail(() => { throw new NotFoundError('Пользователь не найден'); })
     .then((user) => res.send(user))
     .catch((err) => {
+      if (err.code === 11000) {
+        return next(new DoubleEmailError('Пользователь с таким email уже существует'));
+      }
       if (err.name === 'ValidationError') {
         return next(new CastError('Проверьте введенные данные'));
       }
