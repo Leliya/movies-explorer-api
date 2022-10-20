@@ -12,7 +12,7 @@ const userRouter = require('./routes/users');
 const movieRouter = require('./routes/movies');
 const router = require('./routes/router');
 const auth = require('./middlewares/auth');
-const { handlerErrors } = require('./middlewares/handlerErrors');
+const { handlerErrors, notFound } = require('./middlewares/handlerErrors');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 const { PORT = 3000 } = process.env;
@@ -38,6 +38,8 @@ app.use(auth);
 
 app.use('/users', userRouter);
 app.use('/movies', movieRouter);
+
+app.use(notFound);
 
 app.use(errorLogger);
 

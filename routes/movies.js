@@ -9,7 +9,7 @@ movieRouter.post('/', celebrate(
     body: Joi.object().keys({
       country: Joi.string().required(),
       director: Joi.string().required(),
-      duration: Joi.number().required().positive(),
+      duration: Joi.number().required().positive().integer(),
       year: Joi.string().required().length(4),
       description: Joi.string().required(),
       image: Joi.string().required().pattern(regExpURL),

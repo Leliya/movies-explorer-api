@@ -1,23 +1,28 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+const validator = require('validator');
 const AuthorizationError = require('../errors/authorization-error');
 
 const userSchema = new mongoose.Schema({
   email: {
     type: String,
-    required: true,
+    required: [true, 'Email является обязательным'],
     unique: true,
+    validate: {
+      validator: (v) => validator.isEmail(v),
+      message: (props) => `${props.value} не является Email`,
+    },
   },
   password: {
     type: String,
-    required: true,
+    required: [true, 'Пароль является обязательным'],
     select: false,
   },
   name: {
     type: String,
-    required: true,
-    minlength: 2,
-    maxlength: 30,
+    required: [true, 'Имя является обязательным'],
+    minlength: [2, 'Имя не может быть короче 2 символов, сейчас {VALUE}'],
+    maxlength: [30, 'Имя не может быть длиннее 30 символов, сейчас {VALUE}'],
   },
 });
 
