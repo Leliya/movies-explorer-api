@@ -8,21 +8,20 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const { errors } = require('celebrate');
 const { cors } = require('./middlewares/cors');
-const userRouter = require('./routes/users');
-const movieRouter = require('./routes/movies');
-const router = require('./routes/router');
-const auth = require('./middlewares/auth');
+const router = require('./routes/index');
 const { handlerErrors, notFound } = require('./middlewares/handlerErrors');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
+const rateLimit = require('./middlewares/rateLimit');
 
-const { PORT = 3000 } = process.env;
+const { PORT = 3000, NODE_ENV, DATABASE } = process.env;
 
+app.use(rateLimit);
 app.use(helmet());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-mongoose.connect('mongodb://localhost:27017/movies', {
+mongoose.connect(NODE_ENV === 'production' ? DATABASE : 'mongodb://localhost:27017/db', {
   useNewUrlParser: true,
   // useCreateIndex: true,
   // useFindAndModify: false
@@ -33,11 +32,6 @@ app.use(cors);
 app.use(requestLogger);
 
 app.use('', router);
-
-app.use(auth);
-
-app.use('/users', userRouter);
-app.use('/movies', movieRouter);
 
 app.use(notFound);
 

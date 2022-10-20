@@ -6,6 +6,12 @@ const CastError = require('../errors/cast-error');
 const DoubleEmailError = require('../errors/doubling-error');
 const NotFoundError = require('../errors/not-found-error');
 const User = require('../models/user');
+const {
+  INCORRECT_DATA,
+  DOUBLE_EMAIL,
+  USER_NOT_FOUND,
+  SIGNOUT,
+} = require('../utils/const');
 
 const createUser = (req, res, next) => {
   const { name, email, password } = req.body;
@@ -17,17 +23,17 @@ const createUser = (req, res, next) => {
           res.send(userConfidential);
         }).catch((err) => {
           if (err.name === 'ValidationError') {
-            return next(new CastError('Проверьте введенные данные'));
+            return next(new CastError(INCORRECT_DATA));
           }
           if (err.code === 11000) {
-            return next(new DoubleEmailError('Пользователь с таким email уже зарегистрирован'));
+            return next(new DoubleEmailError(DOUBLE_EMAIL));
           }
           return next(err);
         });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return next(new CastError('Проверьте введенные данные'));
+        return next(new CastError(INCORRECT_DATA));
       }
       return next(err);
     });
@@ -35,7 +41,7 @@ const createUser = (req, res, next) => {
 
 const getCurrentUser = (req, res, next) => {
   User.findById(req.user._id)
-    .orFail(() => { throw new NotFoundError('Пользователь не найден'); })
+    .orFail(() => { throw new NotFoundError(USER_NOT_FOUND); })
     .then((user) => res.send(user))
     .catch(next);
 };
@@ -46,14 +52,14 @@ const updateUserInfo = (req, res, next) => {
     req.user._id,
     { name, email },
     { new: true, runValidators: true },
-  ).orFail(() => { throw new NotFoundError('Пользователь не найден'); })
+  ).orFail(() => { throw new NotFoundError(USER_NOT_FOUND); })
     .then((user) => res.send(user))
     .catch((err) => {
       if (err.code === 11000) {
-        return next(new DoubleEmailError('Пользователь с таким email уже существует'));
+        return next(new DoubleEmailError(DOUBLE_EMAIL));
       }
       if (err.name === 'ValidationError') {
-        return next(new CastError('Проверьте введенные данные'));
+        return next(new CastError(INCORRECT_DATA));
       }
       return next(err);
     });
@@ -74,14 +80,14 @@ const login = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return next(new CastError('Проверьте введенные данные'));
+        return next(new CastError(INCORRECT_DATA));
       }
       return next(err);
     });
 };
 
 const signout = (req, res) => {
-  res.clearCookie('jwt').send({ message: 'Вы вышли из профиля' });
+  res.clearCookie('jwt').send({ message: SIGNOUT });
 };
 
 module.exports = {
