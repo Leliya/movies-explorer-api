@@ -14,7 +14,7 @@ const auth = (req, res, next) => {
       throw new AuthorizationError(NOT_AUTHORIZATION);
     }
   } catch (err) {
-    return next(err);
+    return next(new AuthorizationError(NOT_AUTHORIZATION));
   }
   req.user = payload;
   return next();

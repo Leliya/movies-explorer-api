@@ -1,50 +1,65 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 const { langRu, langEn } = require('../utils/regexp');
+const {
+  REQUIRED_COUNTRY,
+  REQUIRED_DIRECTOR,
+  REQUIRED_DURATION,
+  REQUIRED_YEAR,
+  REQUIRED_DESCRIPTION,
+  REQUIRED_IMAGE,
+  NOT_LINK,
+  REQUIRED_TRAILER,
+  REQUIRED_POSTER,
+  REQUIRED_NAME_RU,
+  INCORRECT_NAME_RU,
+  REQUIRED_NAME_EN,
+  INCORRECT_NAME_EN,
+} = require('../utils/const');
 
 const movieSchema = new mongoose.Schema({
   country: {
     type: String,
-    required: [true, 'Страна является обязательным полем'],
+    required: [true, REQUIRED_COUNTRY],
   },
   director: {
     type: String,
-    required: [true, 'Режиссер является обязательным полем'],
+    required: [true, REQUIRED_DIRECTOR],
   },
   duration: {
     type: Number,
-    required: [true, 'Длительность является обязательным полем'],
+    required: [true, REQUIRED_DURATION],
   },
   year: {
     type: String,
-    required: [true, 'Год является обязательным полем'],
+    required: [true, REQUIRED_YEAR],
   },
   description: {
     type: String,
-    required: [true, 'Описание является обязательным полем'],
+    required: [true, REQUIRED_DESCRIPTION],
   },
   image: {
     type: String,
-    required: [true, 'Ссылка на изображение является обязательным полем'],
+    required: [true, REQUIRED_IMAGE],
     validate: {
       validator: (v) => validator.isURL(v),
-      message: (props) => `${props.value} не является ссылкой`,
+      message: NOT_LINK,
     },
   },
   trailerLink: {
     type: String,
-    required: [true, 'Ссылка на трейлер является обязательным полем'],
+    required: [true, REQUIRED_TRAILER],
     validate: {
       validator: (v) => validator.isURL(v),
-      message: (props) => `${props.value} не является ссылкой`,
+      message: NOT_LINK,
     },
   },
   thumbnail: {
     type: String,
-    required: [true, 'Ссылка на постер является обязательным полем'],
+    required: [true, REQUIRED_POSTER],
     validate: {
       validator: (v) => validator.isURL(v),
-      message: (props) => `${props.value} не является ссылкой`,
+      message: NOT_LINK,
     },
   },
   owner: {
@@ -58,18 +73,18 @@ const movieSchema = new mongoose.Schema({
   },
   nameRU: {
     type: String,
-    required: [true, 'Название фильма на русском языке является обязательным полем'],
+    required: [true, REQUIRED_NAME_RU],
     validate: {
       validator: (v) => validator.matches(v, langRu),
-      message: (props) => `Название фильма ${props.value} некорректно, введите название на русском языке`,
+      message: INCORRECT_NAME_RU,
     },
   },
   nameEN: {
     type: String,
-    required: [true, 'Название фильма на фнглийском языке является обязательным полем'],
+    required: [true, REQUIRED_NAME_EN],
     validate: {
       validator: (v) => validator.matches(v, langEn),
-      message: (props) => `Название фильма ${props.value} некорректно, введите название на английском языке`,
+      message: INCORRECT_NAME_EN,
     },
   },
 });

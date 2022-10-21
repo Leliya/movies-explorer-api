@@ -11,34 +11,8 @@ const {
 } = require('../utils/const');
 
 const createMovie = (req, res, next) => {
-  const {
-    country,
-    director,
-    duration,
-    year,
-    description,
-    image,
-    trailerLink,
-    nameRU,
-    nameEN,
-    thumbnail,
-    movieId,
-  } = req.body;
   Movie.create(
-    {
-      country,
-      director,
-      duration,
-      year,
-      description,
-      image,
-      trailerLink,
-      nameRU,
-      nameEN,
-      thumbnail,
-      movieId,
-      owner: req.user._id,
-    },
+    { ...req.body, owner: req.user._id },
   ).then((newMovie) => Movie.findById(newMovie._id)
     .populate('owner')
     .then((movie) => res.send(movie))

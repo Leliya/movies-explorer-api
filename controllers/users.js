@@ -78,12 +78,7 @@ const login = (req, res, next) => {
         })
         .send({ email, password });
     })
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        return next(new CastError(INCORRECT_DATA));
-      }
-      return next(err);
-    });
+    .catch(next);
 };
 
 const signout = (req, res) => {
