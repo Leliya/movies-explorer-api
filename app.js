@@ -14,7 +14,7 @@ const { requestLogger, errorLogger } = require('./middlewares/logger');
 const rateLimit = require('./middlewares/rateLimit');
 const { devDataBase } = require('./utils/devConfig');
 
-const { PORT = 3000, NODE_ENV, DATABASE } = process.env;
+const { PORT = 4000, NODE_ENV, DATABASE } = process.env;
 
 app.use(helmet());
 app.use(bodyParser.json());
